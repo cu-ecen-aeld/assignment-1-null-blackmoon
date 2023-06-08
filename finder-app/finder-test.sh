@@ -8,7 +8,7 @@ set -u
 NUMFILES=10
 WRITESTR=AELD_IS_FUN
 WRITEDIR=/tmp/aeld-data
-username=$(cat conf/username.txt)
+username=$(cat ../conf/username.txt)
 
 if [ $# -lt 3 ]
 then
@@ -18,7 +18,7 @@ then
 		echo "Using default value ${NUMFILES} for number of files to write"
 	else
 		NUMFILES=$1
-	fi	
+	fi
 else
 	NUMFILES=$1
 	WRITESTR=$2
@@ -29,11 +29,13 @@ MATCHSTR="The number of files are ${NUMFILES} and the number of matching lines a
 
 echo "Writing ${NUMFILES} files containing string ${WRITESTR} to ${WRITEDIR}"
 
+#removes any stale files in the writing directory
 rm -rf "${WRITEDIR}"
 
 # create $WRITEDIR if not assignment1
 assignment=`cat ../conf/assignment.txt`
 
+#This code will NOT execute for assignment 1 repository, because the assignment.txt file contains assignment1 as it's contents
 if [ $assignment != 'assignment1' ]
 then
 	mkdir -p "$WRITEDIR"
@@ -51,6 +53,16 @@ fi
 #echo "Removing the old writer utility and compiling as a native application"
 #make clean
 #make
+
+#Took me forever to figure this out, but apparently you still have to make the
+mkdir -p "$WRITEDIR"
+if [ -d "$WRITEDIR" ]
+then
+	echo "$WRITEDIR created"
+else
+	echo "Directory already generated. This means that the previous removal operation did not succeed. You should manually delete all of the files located in $WRITEDIR"
+	exit 1
+fi
 
 for i in $( seq 1 $NUMFILES)
 do
